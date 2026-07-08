@@ -30,18 +30,18 @@ st.markdown("""
     .logo-placeholder { border: 2px dashed #CBD5E1; padding: 20px; text-align: center; border-radius: 8px; color: #64748B; font-size: 14px; margin-top: 15px; }
     div.stButton > button:first-child { background-color: #1E3A8A; color: white; font-weight: bold; font-size: 18px; width: 100%; padding: 10px; margin-top: 20px; }
     </style>
-""", unsafe_allowed_code=True)
+""", unsafe_allow_html=True)
 
 # 3. الترويسة والشعارات
 col1, col2, col3 = st.columns([1, 3, 1])
-with col1: st.markdown('<div class="logo-placeholder">مصر<br>[ مكان شعار كلية علوم الرياضة ]</div>', unsafe_allowed_code=True)
+with col1: st.markdown('<div class="logo-placeholder">مصر<br>[ مكان شعار كلية علوم الرياضة ]</div>', unsafe_allow_html=True)
 with col2:
     st.markdown('''
         <div class="header-text">جامعة المنيا - كلية علوم الرياضة<br>قسم الرياضات الجماعية وألعاب المضرب<br>
         <span style="color: #2563EB; font-size: 20px;">منصة تسجيل رغبات التخصصات لطلاب الفرقة الرابعة للعام الجامعي 2026/2025</span></div>
-    ''', unsafe_allowed_code=True)
-with col3: st.markdown('<div class="logo-placeholder">جامعة المنيا<br>[ مكان شعار جامعة المنيا ]</div>', unsafe_allowed_code=True)
-st.markdown("<br><hr>", unsafe_allowed_code=True)
+    ''', unsafe_allow_html=True)
+with col3: st.markdown('<div class="logo-placeholder">جامعة المنيا<br>[ مكان شعار جامعة المنيا ]</div>', unsafe_allow_html=True)
+st.markdown("<br><hr>", unsafe_allow_html=True)
 
 # 4. صندوق التعليمات الإرشادية
 st.markdown("""
@@ -55,10 +55,10 @@ st.markdown("""
         <li><b>رقم الواتساب:</b> يجب إدخال رقم هاتف محمول صحيح ومكون من 11 رقماً.</li>
     </ol>
 </div>
-""", unsafe_allowed_code=True)
+""", unsafe_allow_html=True)
 
 # 5. القسم الأول: البيانات الأساسية
-st.markdown('<h3 style="color: #1E3A8A;">أولاً: البيانات الأساسية</h3>', unsafe_allowed_code=True)
+st.markdown('<h3 style="color: #1E3A8A;">أولاً: البيانات الأساسية</h3>', unsafe_allow_html=True)
 col_a, col_b = st.columns(2)
 with col_a:
     name = st.text_input("الاسم الرباعي:")
@@ -66,10 +66,10 @@ with col_a:
 with col_b:
     score = st.text_input("مجموع الدرجات بالأرقام (بدون أي علامات):")
     whatsapp = st.text_input("رقم هاتف الواتساب (11 رقماً):", max_chars=11)
-st.markdown("<hr>", unsafe_allowed_code=True)
+st.markdown("<hr>", unsafe_allow_html=True)
 
 # 6. القسم الثاني: الرغبات
-st.markdown('<h3 style="color: #1E3A8A;">ثانياً: ترتيب الرغبات التخصصية</h3>', unsafe_allowed_code=True)
+st.markdown('<h3 style="color: #1E3A8A;">ثانياً: ترتيب الرغبات التخصصية</h3>', unsafe_allow_html=True)
 st.info("💡 قم باختيار الرغبة الأولى لتفعيل باقي الرغبات. لا يمكن اختيار نفس التخصص مرتين.")
 all_sports = ["كرة القدم", "الكرة الطائرة", "كرة السلة", "كرة اليد", "ألعاب المضرب"]
 
@@ -82,7 +82,7 @@ options4 = ["اختر التخصص..."] + [s for s in all_sports if s not in [pr
 pref4 = st.selectbox("الرغبة الرابعة:", options4, disabled=(pref3 == "اختر التخصص..."))
 options5 = ["اختر التخصص..."] + [s for s in all_sports if s not in [pref1, pref2, pref3, pref4]]
 pref5 = st.selectbox("الرغبة الخامسة والأخيرة:", options5, disabled=(pref4 == "اختر التخصص..."))
-st.markdown("<br>", unsafe_allowed_code=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 # 7. زر الإرسال وبرمجة منع التكرار
 submit_btn = st.button("إرسال واعتماد الرغبات نهائياً")
