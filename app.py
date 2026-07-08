@@ -3,13 +3,12 @@ import pandas as pd
 import os
 from datetime import datetime
 
-# 1. إعدادات الصفحة العامة
+# 1. إعدادات الصفحة العامة (مع إخفاء القائمة الجانبية افتراضياً)
 st.set_page_config(page_title="منصة تسجيل الرغبات - جامعة المنيا", layout="wide", initial_sidebar_state="collapsed")
 
-# تعريف مسار ملف حفظ البيانات (قاعدة البيانات المؤقتة)
+# تعريف مسار ملف حفظ البيانات
 DATA_FILE = "students_data.csv"
 
-# دالة لتهيئة ملف البيانات إذا لم يكن موجوداً
 def init_db():
     if not os.path.exists(DATA_FILE):
         df = pd.DataFrame(columns=["Timestamp", "Name", "National_ID", "Score", "Phone", "Pref1", "Pref2", "Pref3", "Pref4", "Pref5"])
@@ -17,7 +16,7 @@ def init_db():
 
 init_db()
 
-# 2. تنسيق مخصص عبر CSS لضبط واجهة التصفح
+# 2. تنسيق مخصص عبر CSS 
 st.markdown("""
     <style>
     div[data-testid="stMarkdownContainer"] p, h1, h2, h3, h4, h5, h6, label {
@@ -32,15 +31,46 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. الترويسة والشعارات
+# --- القائمة الجانبية المخفية للإدارة (لتحميل البيانات) ---
+st.sidebar.markdown("<h3 style='text-align: right; direction: rtl;'>لوحة تحكم الإدارة</h3>", unsafe_allow_html=True)
+admin_pass = st.sidebar.text_input("أدخل كلمة المرور:", type="password", key="admin_pass")
+
+if admin_pass == "admin2026":
+    st.sidebar.success("✅ تم تسجيل الدخول للإدارة")
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "rb") as file:
+            st.sidebar.download_button(
+                label="📥 تحميل بيانات الطلاب (Excel/CSV)",
+                data=file,
+                file_name="students_registered_data.csv",
+                mime="text/csv"
+            )
+# --------------------------------------------------------
+
+# 3. الترويسة والشعارات (تفعيل الصور الحقيقية)
 col1, col2, col3 = st.columns([1, 3, 1])
-with col1: st.markdown('<div class="logo-placeholder">مصر<br>[ مكان شعار كلية علوم الرياضة ]</div>', unsafe_allow_html=True)
+
+# العمود الأيسر (شعار الكلية)
+with col1: 
+    if os.path.exists("fac_logo.png"):
+        st.image("fac_logo.png", use_container_width=True)
+    else:
+        st.markdown('<div class="logo-placeholder">مصر<br>[ مكان شعار كلية علوم الرياضة ]</div>', unsafe_allow_html=True)
+
+# العمود الأوسط (العنوان)
 with col2:
     st.markdown('''
         <div class="header-text">جامعة المنيا - كلية علوم الرياضة<br>قسم الرياضات الجماعية وألعاب المضرب<br>
         <span style="color: #2563EB; font-size: 20px;">منصة تسجيل رغبات التخصصات لطلاب الفرقة الرابعة للعام الجامعي 2026/2025</span></div>
     ''', unsafe_allow_html=True)
-with col3: st.markdown('<div class="logo-placeholder">جامعة المنيا<br>[ مكان شعار جامعة المنيا ]</div>', unsafe_allow_html=True)
+
+# العمود الأيمن (شعار الجامعة)
+with col3: 
+    if os.path.exists("uni_logo.png"):
+        st.image("uni_logo.png", use_container_width=True)
+    else:
+        st.markdown('<div class="logo-placeholder">جامعة المنيا<br>[ مكان شعار جامعة المنيا ]</div>', unsafe_allow_html=True)
+
 st.markdown("<br><hr>", unsafe_allow_html=True)
 
 # 4. صندوق التعليمات الإرشادية
@@ -57,15 +87,20 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 5. القسم الأول: البيانات الأساسية
+# 5. القسم الأول: البيانات الأساسية (عكسنا الأعمدة لضبط الترتيب العربي)
 st.markdown('<h3 style="color: #1E3A8A;">أولاً: البيانات الأساسية</h3>', unsafe_allow_html=True)
-col_a, col_b = st.columns(2)
-with col_a:
+col_left, col_right = st.columns(2)
+
+# العمود الأيمن أصبح يحتوي على الاسم والرقم القومي
+with col_right:
     name = st.text_input("الاسم الرباعي:")
     national_id = st.text_input("الرقم القومي (14 رقماً):", max_chars=14)
-with col_b:
+
+# العمود الأيسر أصبح يحتوي على المجموع ورقم الهاتف
+with col_left:
     score = st.text_input("مجموع الدرجات بالأرقام (بدون أي علامات):")
     whatsapp = st.text_input("رقم هاتف الواتساب (11 رقماً):", max_chars=11)
+
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # 6. القسم الثاني: الرغبات
@@ -88,21 +123,17 @@ st.markdown("<br>", unsafe_allow_html=True)
 submit_btn = st.button("إرسال واعتماد الرغبات نهائياً")
 
 if submit_btn:
-    # 1. التحقق من اكتمال البيانات
     if not name or not national_id or not score or not whatsapp or pref1 == "اختر التخصص..." or pref5 == "اختر التخصص...":
         st.error("❌ يرجى استكمال جميع البيانات وتحديد الرغبات الخمس قبل الإرسال.")
-    # 2. التحقق من صحة الأرقام
     elif len(national_id) != 14 or not national_id.isdigit():
         st.error("❌ عذراً.. الرقم القومي يجب أن يتكون من 14 رقماً صحيحاً.")
     elif len(whatsapp) != 11 or not whatsapp.isdigit():
         st.error("❌ عذراً.. رقم الواتساب يجب أن يتكون من 11 رقماً صحيحاً.")
     else:
-        # 3. التحقق من عدم التكرار في قاعدة البيانات
         df = pd.read_csv(DATA_FILE)
         if str(national_id) in df["National_ID"].astype(str).values:
             st.error(f"⚠️ عذراً يا {name}! تم تسجيل رغباتك مسبقاً بهذا الرقم القومي، ولا يُسمح بالتسجيل أكثر من مرة.")
         else:
-            # 4. حفظ البيانات إذا كانت سليمة وغير مكررة
             new_data = pd.DataFrame({
                 "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
                 "Name": [name],
